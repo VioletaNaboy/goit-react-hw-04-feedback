@@ -1,0 +1,13 @@
+.btnsWrapper {
+  display: flex;
+  gap: 12px;
+}
+.btnsWrapper button {
+  text-transform: capitalize;
+  padding: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  min-width: 64px;
+  border-color: #fff;
+  border-radius: 8px;
+}
