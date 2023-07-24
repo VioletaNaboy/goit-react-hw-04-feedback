@@ -1,69 +1,72 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback, createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Section } from './Section';
 import { Statistics } from './Statistics/Statistics';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { Notification } from './Statistics/Notification';
-class FeedbackWidget extends Component {
-  static defaultProps = {
-    step: 1,
-    initialValue: 0,
-  };
-  state = {
-    good: this.props.initialValue,
-    neutral: this.props.initialValue,
-    bad: this.props.initialValue,
-  };
+const FeedbackContext = createContext();
+export const FeedbackWidget = ({ step }) => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const totalFeedback = good + neutral + bad;
+  const positivePercentage =
+    totalFeedback > 0 ? Math.round((good / totalFeedback) * 100) : 0;
+  const handleFeedback = useCallback(
+    type => {
+      switch (type) {
+        case 'good':
+          setGood(prevGood => prevGood + step);
+          break;
+        case 'neutral':
+          setNeutral(prevNeutral => prevNeutral + step);
+          break;
+        case 'bad':
+          setBad(prevBad => prevBad + step);
+          break;
+        default:
+          break;
+      }
+    },
+    [step]
+  );
 
-  handleFeedback = type => {
-    this.setState(prevState => ({
-      [type]: prevState[type] + this.props.step,
-    }));
-  };
+  const feedbackOptions = ['good', 'neutral', 'bad'];
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    return good + neutral + bad;
-  };
+  const hasFeedback = totalFeedback > 0;
 
-  countPositiveFeedbackPercentage = () => {
-    const { good } = this.state;
-    const total = this.countTotalFeedback();
-    return total > 0 ? Math.round((good / total) * 100) : 0;
-  };
-  render() {
-    const { good, neutral, bad } = this.state;
-    const totalFeedback = this.countTotalFeedback();
-    const positivePercentage = this.countPositiveFeedbackPercentage();
-    const feedbackOptions = Object.keys(this.state);
-    const hasFeedback = totalFeedback > 0;
-    return (
+  return (
+    <FeedbackContext.Provider
+      value={{
+        good,
+        neutral,
+        bad,
+        handleFeedback,
+        totalFeedback,
+        positivePercentage,
+      }}
+    >
       <div>
         <Section title="Please leave feedback">
-          <FeedbackOptions
-            options={feedbackOptions}
-            onLeaveFeedback={this.handleFeedback}
-          />
+          <FeedbackOptions options={feedbackOptions} />
         </Section>
         <Section title="Statistics">
           {hasFeedback ? (
-            <Statistics
-              good={good}
-              neutral={neutral}
-              bad={bad}
-              total={totalFeedback}
-              positivePercentage={positivePercentage}
-            />
+            <Statistics />
           ) : (
             <Notification message="There is no feedback" />
           )}
         </Section>
       </div>
-    );
-  }
-}
+    </FeedbackContext.Provider>
+  );
+};
+FeedbackWidget.defaultProps = {
+  step: 1,
+};
+
 FeedbackWidget.propTypes = {
   step: PropTypes.number.isRequired,
-  initialValue: PropTypes.number.isRequired,
 };
 export default FeedbackWidget;
+export const useFeedbackContext = () => useContext(FeedbackContext);

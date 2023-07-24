@@ -1,10 +1,12 @@
 import css from './FeedbackOptions.module.css';
 import PropTypes from 'prop-types';
-export const FeedbackOptions = ({ options, onLeaveFeedback }) => {
+import { useFeedbackContext } from '../FeedbackWidget';
+export const FeedbackOptions = ({ options }) => {
+  const { handleFeedback } = useFeedbackContext();
   return (
     <div className={css.btnsWrapper}>
       {options.map(option => (
-        <button key={option} onClick={() => onLeaveFeedback(option)}>
+        <button key={option} onClick={() => handleFeedback(option)}>
           {option}
         </button>
       ))}
@@ -14,5 +16,4 @@ export const FeedbackOptions = ({ options, onLeaveFeedback }) => {
 
 FeedbackOptions.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onLeaveFeedback: PropTypes.func.isRequired,
 };
