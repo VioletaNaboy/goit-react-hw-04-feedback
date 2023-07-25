@@ -1,8 +1,6 @@
 import css from './FeedbackOptions.module.css';
 import PropTypes from 'prop-types';
-import { useFeedbackContext } from '../FeedbackWidget';
-export const FeedbackOptions = ({ options }) => {
-  const { handleFeedback } = useFeedbackContext();
+export const FeedbackOptions = ({ options, handleFeedback }) => {
   return (
     <div className={css.btnsWrapper}>
       {options.map(option => (
@@ -16,4 +14,5 @@ export const FeedbackOptions = ({ options }) => {
 
 FeedbackOptions.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleFeedback: PropTypes.func.isRequired,
 };

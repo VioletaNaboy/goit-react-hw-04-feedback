@@ -1,8 +1,12 @@
 import css from './Statistics.module.css';
-import { useFeedbackContext } from '../FeedbackWidget';
-export const Statistics = () => {
-  const { good, neutral, bad, totalFeedback, positivePercentage } =
-    useFeedbackContext();
+import PropTypes from 'prop-types';
+export const Statistics = ({
+  good,
+  neutral,
+  bad,
+  totalFeedback,
+  positivePercentage,
+}) => {
   return (
     <div className={css.statistics}>
       <p>Good: {good}</p>
@@ -12,4 +16,11 @@ export const Statistics = () => {
       <p>Positive Feedback Percentage: {positivePercentage}%</p>
     </div>
   );
+};
+Statistics.propTypes = {
+  good: PropTypes.number.isRequired,
+  neutral: PropTypes.number.isRequired,
+  bad: PropTypes.number.isRequired,
+  totalFeedback: PropTypes.number.isRequired,
+  positivePercentage: PropTypes.number.isRequired,
 };
